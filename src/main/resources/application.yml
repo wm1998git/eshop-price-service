@@ -1,0 +1,18 @@
+server:
+  port: 8763 # 本服务所使用的端口号
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/ # 指定将本微服务注册到的Eureka注册中心的地址
+      
+spring:
+  application:
+    name: eshop-price-service # 自己要注册的微服务名称
+  datasource:          # 配置Druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    platform: mysql
+    # url: jdbc:mysql://localhost:3356/eshop?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC # 连接Win7本地的MySQL数据库
+    url: jdbc:mysql://192.168.1.103:3306/eshop?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC # 连接Win7本地的MySQL数据库
+    username: root
+    password: root
