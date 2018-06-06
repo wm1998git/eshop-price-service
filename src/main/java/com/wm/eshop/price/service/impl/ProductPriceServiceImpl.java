@@ -3,6 +3,7 @@ package com.wm.eshop.price.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import com.wm.eshop.price.mapper.ProductPriceMapper;
 import com.wm.eshop.price.model.ProductPrice;
 import com.wm.eshop.price.service.ProductPriceService;
@@ -38,7 +39,24 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 	}
 
 	public ProductPrice findById(Long id) {
+		// 先从redis里面查，如果没有再从mysql里面查，查到了以后再刷新回redis
+		// 大家想一想，有没有觉得这个场景似曾相识啊
+		// 这不就是我们之前讲解的那个mysql+redis双写一致性的问题场景+解决方案
 		return productPriceMapper.findById(id);
 	}
 
+	@Override
+	public ProductPrice findByProductId(Long productId) {
+		
+		Jedis jedis = jedisPool.getResource();
+		String dataJson = jedis.get("product_price_" + productId);
+		if (!Strings.isNullOrEmpty(dataJson)) {
+			JSONObject dataJSONObject = JSONObject.parseObject(dataJson);
+			dataJSONObject.put("id", "-1");
+			return JSONObject.parseObject(dataJSONObject.toJSONString(), ProductPrice.class);
+		}
+		
+		return productPriceMapper.findByProductId(productId);
+	}
+	
 }

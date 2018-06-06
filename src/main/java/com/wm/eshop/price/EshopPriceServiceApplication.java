@@ -20,7 +20,7 @@ public class EshopPriceServiceApplication {
 		config.setMaxWaitMillis(1000 * 10);// 连接Redis Pool最多等待10秒
 		config.setTestOnBorrow(true);
 		// return new JedisPool(config, "localhost", 6379);
-		return new JedisPool(config, "192.168.1.103", 1111);// 生产环境Redis的twemproxy的主集群
+		return new JedisPool(config, "192.168.1.103", 1111);// 生产环境Redis的twemproxy的写主集群
 	}
 
 	public static void main(String[] args) {
